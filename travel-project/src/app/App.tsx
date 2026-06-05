@@ -1,5 +1,5 @@
 import { useState } from "react";
-import svgPaths from "../imports/svg-xs6hpzersk";
+import { CalendarDays, ChevronDown, Clock, Globe, MapPin, MessageCircle, Menu, Package, ShieldCheck, Users, Wifi, X } from "lucide-react";
 import imgFrame1 from "../assets/gambar1.png";
 import imgFrame31 from "../assets/gambar2.png";
 import imgFrame32 from "../assets/gambar3.png";
@@ -7,70 +7,140 @@ import imgFrame30 from "../assets/gambar4.png";
 import imgFrame33 from "../assets/gambar5.png";
 import imgFrame34 from "../assets/gambar2.png";
 import imgFrame35 from "../assets/gambar3.png";
+import logo from "../assets/Frame 77.png";
 
 export default function App() {
-  const [selectedDestination, setSelectedDestination] = useState("Semarang");
+  const [selectedDestination, setSelectedDestination] = useState("Pangandaran");
   const [selectedPeople, setSelectedPeople] = useState("Dua");
   const [startDate, setStartDate] = useState("12-08-2028");
   const [endDate, setEndDate] = useState("14-08-2028");
   const [selectedCategory, setSelectedCategory] = useState("Semua");
+  const [searchMessage, setSearchMessage] = useState("");
+  const [bookingMessage, setBookingMessage] = useState("");
   const [showDestinationDropdown, setShowDestinationDropdown] = useState(false);
   const [showPeopleDropdown, setShowPeopleDropdown] = useState(false);
   const [showStartDateDropdown, setShowStartDateDropdown] = useState(false);
   const [showEndDateDropdown, setShowEndDateDropdown] = useState(false);
-  const [startDateOptions] = useState(["10-08-2028", "11-08-2028", "12-08-2028", "13-08-2028"]);
-  const [endDateOptions] = useState(["13-08-2028", "14-08-2028", "15-08-2028", "16-08-2028"]);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-  const destinations = ["Semarang", "Jakarta", "Bandung", "Surabaya", "Yogyakarta"];
+  const destinations = [
+    { name: "Pangandaran", image: imgFrame1, duration: "2 Hari", people: "Min 2 Orang", category: "Alam" },
+    { name: "Puncak Bogor", image: imgFrame31, duration: "1 Hari", people: "Min 7 Orang", category: "Kota" },
+    { name: "Jogjakarta", image: imgFrame32, duration: "3 Hari", people: "Min 10 Orang", category: "Trending" },
+  ];
   const peopleOptions = ["Satu", "Dua", "Tiga", "Empat", "Lima"];
   const categories = ["Semua", "Trending", "Alam", "Kota"];
+  const startDateOptions = ["10-08-2028", "11-08-2028", "12-08-2028", "13-08-2028"];
+  const endDateOptions = ["13-08-2028", "14-08-2028", "15-08-2028", "16-08-2028"];
+
+  const parseDate = (date: string) => {
+    const [day, month, year] = date.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  };
 
   const handleSearch = () => {
-    alert(`Mencari: ${selectedDestination}, ${selectedPeople} orang, ${startDate} - ${endDate}`);
+    const start = parseDate(startDate);
+    const end = parseDate(endDate);
+
+    if (start > end) {
+      setSearchMessage("Tanggal akhir harus setelah tanggal mulai.");
+      return;
+    }
+
+    setSearchMessage(`Hasil pencarian: ${selectedDestination} untuk ${selectedPeople} orang, ${startDate} - ${endDate}.`);
+    setBookingMessage("");
   };
 
   const handleBooking = () => {
-    alert("Booking Now clicked!");
+    const bookingText = encodeURIComponent(
+      `Halo GreenTrail Travel, saya ingin memesan perjalanan ke ${selectedDestination} untuk ${selectedPeople} orang, mulai ${startDate} sampai ${endDate}.`
+    );
+
+    window.open(`https://wa.me/6281234567890?text=${bookingText}`, "_blank");
+    setBookingMessage(`Pesan pemesanan terkirim untuk ${selectedDestination}. Silakan lanjutkan di WhatsApp.`);
   };
 
   const handleWhatsApp = () => {
-    window.open("https://wa.me/6281234567890", "_blank");
+    const infoText = encodeURIComponent(
+      "Halo GreenTrail Travel, saya ingin informasi lebih lanjut tentang paket perjalanan Anda."
+    );
+    window.open(`https://wa.me/6281234567890?text=${infoText}`, "_blank");
   };
 
+  const filteredDestinations =
+    selectedCategory === "Semua"
+      ? destinations
+      : destinations.filter((destination) => destination.category === selectedCategory);
+
   return (
-    <div className="w-screen h-screen overflow-auto bg-white font-poppins">
+    <div className="w-screen h-screen overflow-auto bg-[#f8faf6] font-poppins scroll-smooth">
       <div className="min-h-screen w-full flex flex-col items-center">
         {/* Hero Section */}
-        <div className="w-full relative">
-          <div className="w-full h-screen md:h-[463px] relative overflow-hidden">
+        <div id="home" className="w-full relative">
+          <div className="w-full h-screen md:h-[520px] relative overflow-hidden">
+            <div className="absolute -left-16 top-16 h-72 w-72 rounded-full bg-[#7bc86c]/30 blur-3xl" />
+            <div className="absolute right-0 top-28 h-56 w-56 rounded-full bg-[#d8f2e1]/50 blur-3xl" />
             <img alt="" className="absolute inset-0 w-full h-full object-cover" src={imgFrame1} />
 
             {/* Navbar */}
-            <div className="absolute top-0 left-0 right-0 bg-[rgba(0,0,0,0.36)] px-4 md:px-[25px] py-4 md:py-[20px]">
+            <div className="fixed inset-x-4 top-4 z-50 mx-auto max-w-[1320px] rounded-[28px] bg-white/95 backdrop-blur-xl border border-[#dbe9d0] shadow-[0_25px_60px_rgba(52,75,36,0.18)] px-4 md:px-[25px] py-4 md:py-[20px]">
               <div className="flex items-center justify-between gap-4">
                 {/* Logo */}
-                <div className="flex gap-2 md:gap-[10px] items-center min-w-fit">
-                  <div className="size-5 md:size-[23.593px] bg-[#D9D9D9] rounded-full" />
-                  <p className="font-medium text-base md:text-[20px] text-white">Nama</p>
+                <div className="flex gap-3 md:gap-[14px] items-center min-w-fit">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full text-[#4a8039]">
+                    <img alt="GreenTrail Logo" className="h-full w-full object-contain" src={logo} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-base md:text-[20px] text-[#1f381b]">GreenTrail</p>
+                    <p className="text-[11px] uppercase tracking-[0.24em] text-[#58714f]">Travel</p>
+                  </div>
                 </div>
 
                 {/* Menu */}
-                <div className="hidden lg:flex gap-6 md:gap-[32px] items-center text-xs md:text-[15px] text-white flex-1 justify-center">
-                  <p className="font-medium cursor-pointer hover:opacity-80">Home</p>
-                  <p className="font-normal cursor-pointer hover:opacity-80">Tentang Kami</p>
-                  <p className="font-normal cursor-pointer hover:opacity-80">Destinasi</p>
-                  <p className="font-normal cursor-pointer hover:opacity-80">Pelayanan</p>
-                  <p className="font-normal cursor-pointer hover:opacity-80">Galeri Konsumen</p>
+                <div className="hidden lg:flex gap-6 md:gap-[32px] items-center text-xs md:text-[15px] text-[#2f4e26] flex-1 justify-center">
+                  <a href="#home" className="font-medium cursor-pointer transition hover:text-[#569643]">Home</a>
+                  <a href="#tentang" className="font-normal cursor-pointer transition hover:text-[#569643]">Tentang Kami</a>
+                  <a href="#destinasi" className="font-normal cursor-pointer transition hover:text-[#569643]">Destinasi</a>
+                  <a href="#pelayanan" className="font-normal cursor-pointer transition hover:text-[#569643]">Pelayanan</a>
+                  <a href="#galeri" className="font-normal cursor-pointer transition hover:text-[#569643]">Galeri Konsumen</a>
                 </div>
 
-                {/* Booking Button */}
-                <button
-                  onClick={handleBooking}
-                  className="bg-[#569643] px-3 md:px-[19px] py-2 md:py-[5px] rounded-[15px] hover:bg-[#4a8039] transition-colors min-w-fit"
-                >
-                  <p className="font-bold text-xs md:text-[15px] text-white">Booking Now</p>
-                </button>
+                {/* Mobile menu toggle + booking */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleBooking}
+                    className="hidden md:inline-flex items-center justify-center bg-gradient-to-r from-[#4f7a36] to-[#6db44f] px-4 py-2 rounded-[15px] text-xs md:text-[15px] font-bold text-white hover:from-[#3d652a] hover:to-[#5b9637] transition"
+                  >
+                    Booking Now
+                  </button>
+                  <button
+                    onClick={() => setShowMobileMenu(!showMobileMenu)}
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-[16px] border border-[#d6e9d0] bg-[#f6fbf3] text-[#3f5f34] transition hover:bg-[#e9f5e6] lg:hidden"
+                    aria-label="Toggle menu"
+                  >
+                    {showMobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                  </button>
+                </div>
               </div>
+
+              {showMobileMenu && (
+                <div className="mt-4 flex flex-col gap-3 rounded-[24px] border border-[#d6e9d0] bg-[#f8fbf6] p-4 lg:hidden">
+                  <a href="#home" onClick={() => setShowMobileMenu(false)} className="font-medium text-sm text-[#2f4e26] transition hover:text-[#569643]">Home</a>
+                  <a href="#tentang" onClick={() => setShowMobileMenu(false)} className="font-medium text-sm text-[#2f4e26] transition hover:text-[#569643]">Tentang Kami</a>
+                  <a href="#destinasi" onClick={() => setShowMobileMenu(false)} className="font-medium text-sm text-[#2f4e26] transition hover:text-[#569643]">Destinasi</a>
+                  <a href="#pelayanan" onClick={() => setShowMobileMenu(false)} className="font-medium text-sm text-[#2f4e26] transition hover:text-[#569643]">Pelayanan</a>
+                  <a href="#galeri" onClick={() => setShowMobileMenu(false)} className="font-medium text-sm text-[#2f4e26] transition hover:text-[#569643]">Galeri Konsumen</a>
+                  <button
+                    onClick={() => {
+                      handleBooking();
+                      setShowMobileMenu(false);
+                    }}
+                    className="w-full rounded-[15px] bg-[#569643] px-4 py-2 text-sm font-bold text-white hover:bg-[#4a8039] transition"
+                  >
+                    Booking Now
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Hero Content */}
@@ -81,15 +151,12 @@ export default function App() {
               </div>
 
               {/* Search Bar */}
-              <div className="bg-white flex flex-col md:flex-row gap-4 md:gap-[38px] items-center px-4 md:px-[30px] py-4 md:py-[20px] rounded-[20px] w-full md:w-auto max-w-5xl mx-4">
+              <div className="bg-white/95 border border-[#dce7d7] shadow-[0_30px_80px_rgba(34,78,41,0.12)] flex flex-col md:flex-row gap-4 md:gap-[38px] items-center px-4 md:px-[30px] py-4 md:py-[20px] rounded-[30px] w-full md:w-auto max-w-5xl mx-4">
                 {/* Destination */}
                 <div className="flex flex-col gap-2 md:gap-[10px] relative w-full md:w-auto">
                   <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[21px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 14.8861 18.0832">
-                        <path clipRule="evenodd" d={svgPaths.p26a70d00.path} fill="#878787" fillRule="evenodd" />
-                        <path clipRule="evenodd" d={svgPaths.p33ef4800.path} fill="#878787" fillRule="evenodd" />
-                      </svg>
+                    <div className="size-4 md:size-[21px] text-[#569643]">
+                      <MapPin className="w-full h-full" />
                     </div>
                     <p className="font-normal text-xs md:text-[14px] text-[#878787]">Destinasi</p>
                   </div>
@@ -98,24 +165,22 @@ export default function App() {
                     onClick={() => setShowDestinationDropdown(!showDestinationDropdown)}
                   >
                     <p className="font-medium text-xs md:text-[14px] text-[#333]">{selectedDestination}</p>
-                    <div className="size-3 md:size-[16px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 16 16">
-                        <path clipRule="evenodd" d={svgPaths.p1dffb80.path} fill="black" fillRule="evenodd" />
-                      </svg>
+                    <div className="size-3 md:size-[16px] text-[#333]">
+                      <ChevronDown className="w-full h-full" />
                     </div>
                   </div>
                   {showDestinationDropdown && (
                     <div className="absolute top-[70px] left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
                       {destinations.map((dest) => (
                         <div
-                          key={dest}
+                          key={dest.name}
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer font-normal text-xs md:text-[14px]"
                           onClick={() => {
-                            setSelectedDestination(dest);
+                            setSelectedDestination(dest.name);
                             setShowDestinationDropdown(false);
                           }}
                         >
-                          {dest}
+                          {dest.name}
                         </div>
                       ))}
                     </div>
@@ -131,10 +196,8 @@ export default function App() {
                 {/* People */}
                 <div className="flex flex-col gap-2 md:gap-[10px] relative w-full md:w-auto">
                   <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[18px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 18 19">
-                        <path d={svgPaths.p1dc69a80.path} stroke="#878787" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                      </svg>
+                    <div className="size-4 md:size-[18px] text-[#569643]">
+                      <Users className="w-full h-full" />
                     </div>
                     <p className="font-normal text-xs md:text-[14px] text-[#878787]">Orang</p>
                   </div>
@@ -143,10 +206,8 @@ export default function App() {
                     onClick={() => setShowPeopleDropdown(!showPeopleDropdown)}
                   >
                     <p className="font-medium text-xs md:text-[14px] text-[#333]">{selectedPeople}</p>
-                    <div className="size-3 md:size-[16px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 16 16">
-                        <path clipRule="evenodd" d={svgPaths.p1dffb80.path} fill="black" fillRule="evenodd" />
-                      </svg>
+                    <div className="size-3 md:size-[16px] text-[#333]">
+                      <ChevronDown className="w-full h-full" />
                     </div>
                   </div>
                   {showPeopleDropdown && (
@@ -176,23 +237,15 @@ export default function App() {
                 {/* Start Date */}
                 <div className="flex flex-col gap-2 md:gap-[10px] relative w-full md:w-auto">
                   <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[18px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 18 18">
-                        <path d={svgPaths.pdc56400.path} fill="#878787" />
-                        <path d="M4 7H5V8H4V7Z" fill="#878787" />
-                        <path d="M7 7H8V8H7V7Z" fill="#878787" />
-                        <path d="M10 7H11V8H10V7Z" fill="#878787" />
-                        <path d="M13 7H14V8H13V7Z" fill="#878787" />
-                      </svg>
+                    <div className="size-4 md:size-[18px] text-[#569643]">
+                      <CalendarDays className="w-full h-full" />
                     </div>
                     <p className="font-normal text-xs md:text-[14px] text-[#878787]">Start</p>
                   </div>
                   <div className="flex gap-2 md:gap-[10px] items-center cursor-pointer" onClick={() => setShowStartDateDropdown(!showStartDateDropdown)}>
                     <p className="font-medium text-xs md:text-[14px] text-[#333]">{startDate}</p>
-                    <div className="size-3 md:size-[16px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 16 16">
-                        <path clipRule="evenodd" d={svgPaths.p1dffb80.path} fill="black" fillRule="evenodd" />
-                      </svg>
+                    <div className="size-3 md:size-[16px] text-[#333]">
+                      <ChevronDown className="w-full h-full" />
                     </div>
                   </div>
                   {showStartDateDropdown && (
@@ -222,23 +275,15 @@ export default function App() {
                 {/* End Date */}
                 <div className="flex flex-col gap-2 md:gap-[10px] relative w-full md:w-auto">
                   <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[18px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 18 18">
-                        <path d={svgPaths.pdc56400.path} fill="#878787" />
-                        <path d="M4 7H5V8H4V7Z" fill="#878787" />
-                        <path d="M7 7H8V8H7V7Z" fill="#878787" />
-                        <path d="M10 7H11V8H10V7Z" fill="#878787" />
-                        <path d="M13 7H14V8H13V7Z" fill="#878787" />
-                      </svg>
+                    <div className="size-4 md:size-[18px] text-[#569643]">
+                      <CalendarDays className="w-full h-full" />
                     </div>
                     <p className="font-normal text-xs md:text-[14px] text-[#878787]">End</p>
                   </div>
                   <div className="flex gap-2 md:gap-[10px] items-center cursor-pointer" onClick={() => setShowEndDateDropdown(!showEndDateDropdown)}>
                     <p className="font-medium text-xs md:text-[14px] text-[#333]">{endDate}</p>
-                    <div className="size-3 md:size-[16px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 16 16">
-                        <path clipRule="evenodd" d={svgPaths.p1dffb80.path} fill="black" fillRule="evenodd" />
-                      </svg>
+                    <div className="size-3 md:size-[16px] text-[#333]">
+                      <ChevronDown className="w-full h-full" />
                     </div>
                   </div>
                   {showEndDateDropdown && (
@@ -267,6 +312,16 @@ export default function App() {
                   <p className="font-normal text-xs md:text-[15px] text-white">Cari</p>
                 </button>
               </div>
+              {searchMessage && (
+                <div className="mt-4 text-center text-sm md:text-base text-[#1B6D2A]">
+                  {searchMessage}
+                </div>
+              )}
+              {bookingMessage && (
+                <div className="mt-2 text-center text-sm md:text-base text-[#425B19]">
+                  {bookingMessage}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -274,18 +329,18 @@ export default function App() {
         {/* Content Sections */}
         <div className="w-full flex flex-col gap-12 md:gap-[60px] py-8 md:py-[78px] items-center px-4 md:px-[20px]">
           {/* Tentang Kami Section */}
-          <div className="flex flex-col gap-4 md:gap-[16px] items-center w-full max-w-3xl">
+          <div id="tentang" className="scroll-mt-28 flex flex-col gap-4 md:gap-[16px] items-center w-full max-w-3xl">
             <div className="bg-[rgba(86,150,67,0.22)] px-3 md:px-[10px] py-3 md:py-[10px] rounded-[10px]">
               <p className="font-medium text-xs md:text-[14px] text-[#569643]">TENTANG KAMI</p>
             </div>
             <p className="font-medium text-lg md:text-[24px] text-[#333]">Tentang Perusahaan</p>
             <p className="font-normal text-sm md:text-[16px] text-[#333] text-center">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+              GreenTrail Travel adalah penyedia perjalanan yang menghubungkan petualang dengan destinasi lokal terbaik di Indonesia. Kami memudahkan perjalanan Anda dengan paket lengkap, dukungan personal, dan pengalaman ramah lingkungan.
             </p>
           </div>
 
           {/* Destinasi Section */}
-          <div className="flex flex-col gap-8 md:gap-[37px] items-center w-full">
+          <div id="destinasi" className="scroll-mt-28 flex flex-col gap-8 md:gap-[37px] items-center w-full">
             <div className="flex flex-col gap-4 md:gap-[16px] items-center">
               <div className="bg-[rgba(86,150,67,0.22)] px-3 md:px-[10px] py-3 md:py-[10px] rounded-[10px]">
                 <p className="font-medium text-xs md:text-[14px] text-[#569643]">DESTINASI</p>
@@ -297,15 +352,15 @@ export default function App() {
             </div>
 
             {/* Category Filter */}
-            <div className="bg-[rgba(73,135,192,0.2)] flex gap-2 md:gap-[10px] px-2 md:px-[10px] py-2 md:py-[8px] rounded-[15px] flex-wrap justify-center">
+            <div className="bg-[#e4f2de] flex gap-2 md:gap-[10px] px-2 md:px-[10px] py-2 md:py-[8px] rounded-[20px] flex-wrap justify-center shadow-sm">
               {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 md:px-[18px] py-2 md:py-[10px] rounded-[10px] transition-colors text-xs md:text-[14px] ${
+                  className={`px-4 md:px-[20px] py-2 md:py-[10px] rounded-full transition-all text-xs md:text-[14px] ${
                     selectedCategory === category
-                      ? 'bg-[#569643] text-white'
-                      : 'bg-transparent text-[#333] hover:bg-[rgba(86,150,67,0.1)]'
+                      ? 'bg-[#569643] text-white shadow-lg'
+                      : 'bg-white/80 text-[#2d3f1e] hover:bg-[#d7e8cf]'
                   }`}
                 >
                   <p className="font-medium">{category}</p>
@@ -315,88 +370,37 @@ export default function App() {
 
             {/* Destination Cards */}
             <div className="flex gap-4 md:gap-[37px] items-start flex-wrap justify-center">
-              {/* Pangandaran */}
-              <div className="flex flex-col gap-2 md:gap-[10px] w-full sm:w-80 md:w-[309px]">
-                <div className="h-32 md:h-[157px] rounded-[20px] overflow-hidden">
-                  <img alt="Pangandaran" className="w-full h-full object-cover" src={imgFrame1} />
-                </div>
-                <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Pangandaran</p>
-                <div className="flex gap-4 md:gap-[29px] flex-wrap">
-                  <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[18px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 18 18">
-                        <path d={svgPaths.pdc56400.path} fill="#878787" />
-                      </svg>
+              {filteredDestinations.length > 0 ? (
+                filteredDestinations.map((destination) => (
+                  <div key={destination.name} className="flex flex-col gap-2 md:gap-[10px] w-full sm:w-80 md:w-[309px] bg-white rounded-[30px] p-4 shadow-[0_25px_60px_rgba(52,75,36,0.12)] transition-transform duration-300 hover:-translate-y-1">
+                    <div className="h-32 md:h-[157px] rounded-[24px] overflow-hidden">
+                      <img alt={destination.name} className="w-full h-full object-cover" src={destination.image} />
                     </div>
-                    <p className="font-normal text-xs md:text-[14px] text-[#878787]">2 Hari</p>
-                  </div>
-                  <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[18px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 18 19">
-                        <path d={svgPaths.p1dc69a80.path} stroke="#878787" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                      </svg>
+                    <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">{destination.name}</p>
+                    <div className="flex gap-4 md:gap-[29px] flex-wrap">
+                      <div className="flex gap-2 md:gap-[10px] items-center">
+                        <div className="size-4 md:size-[18px] text-[#878787]">
+                          <Clock className="w-full h-full" />
+                        </div>
+                        <p className="font-normal text-xs md:text-[14px] text-[#878787]">{destination.duration}</p>
+                      </div>
+                      <div className="flex gap-2 md:gap-[10px] items-center">
+                        <div className="size-4 md:size-[18px] text-[#878787]">
+                          <Users className="w-full h-full" />
+                        </div>
+                        <p className="font-normal text-xs md:text-[14px] text-[#878787]">{destination.people}</p>
+                      </div>
                     </div>
-                    <p className="font-normal text-xs md:text-[14px] text-[#878787]">Min 2 Orang</p>
                   </div>
-                </div>
-              </div>
-
-              {/* Puncak Bogor */}
-              <div className="flex flex-col gap-2 md:gap-[10px] w-full sm:w-80 md:w-[309px]">
-                <div className="h-32 md:h-[157px] rounded-[20px] overflow-hidden">
-                  <img alt="Puncak Bogor" className="w-full h-full object-cover" src={imgFrame31} />
-                </div>
-                <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Puncak Bogor</p>
-                <div className="flex gap-4 md:gap-[29px] flex-wrap">
-                  <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[18px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 18 18">
-                        <path d={svgPaths.pdc56400.path} fill="#878787" />
-                      </svg>
-                    </div>
-                    <p className="font-normal text-xs md:text-[14px] text-[#878787]">1 Hari</p>
-                  </div>
-                  <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[18px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 18 19">
-                        <path d={svgPaths.p1dc69a80.path} stroke="#878787" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                      </svg>
-                    </div>
-                    <p className="font-normal text-xs md:text-[14px] text-[#878787]">Min 7 Orang</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Jogjakarta */}
-              <div className="flex flex-col gap-2 md:gap-[10px] w-full sm:w-80 md:w-[309px]">
-                <div className="h-32 md:h-[157px] rounded-[20px] overflow-hidden">
-                  <img alt="Jogjakarta" className="w-full h-full object-cover" src={imgFrame32} />
-                </div>
-                <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Jogjakarta</p>
-                <div className="flex gap-4 md:gap-[29px] flex-wrap">
-                  <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[18px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 18 18">
-                        <path d={svgPaths.pdc56400.path} fill="#878787" />
-                      </svg>
-                    </div>
-                    <p className="font-normal text-xs md:text-[14px] text-[#878787]">3 Hari</p>
-                  </div>
-                  <div className="flex gap-2 md:gap-[10px] items-center">
-                    <div className="size-4 md:size-[18px]">
-                      <svg className="w-full h-full" fill="none" viewBox="0 0 18 19">
-                        <path d={svgPaths.p1dc69a80.path} stroke="#878787" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                      </svg>
-                    </div>
-                    <p className="font-normal text-xs md:text-[14px] text-[#878787]">Min 10 Orang</p>
-                  </div>
-                </div>
-              </div>
+                ))
+              ) : (
+                <p className="text-center text-sm text-[#333] w-full">Tidak ada destinasi untuk kategori "{selectedCategory}".</p>
+              )}
             </div>
           </div>
 
           {/* Pelayanan Section */}
-          <div className="flex flex-col gap-8 md:gap-[30px] w-full max-w-5xl">
+          <div id="pelayanan" className="scroll-mt-28 flex flex-col gap-8 md:gap-[30px] w-full max-w-5xl">
             <div className="flex flex-col gap-4 md:gap-[16px]">
               <div className="bg-[rgba(86,150,67,0.22)] px-3 md:px-[10px] py-3 md:py-[10px] rounded-[10px] w-fit">
                 <p className="font-medium text-xs md:text-[14px] text-[#569643]">PELAYANAN</p>
@@ -404,65 +408,39 @@ export default function App() {
               <div className="flex flex-col md:flex-row items-start justify-between gap-4 md:gap-8">
                 <p className="font-medium text-lg md:text-[24px] text-[#333] w-full md:w-1/2">Pelayanan Yang Kita Miliki</p>
                 <p className="font-normal text-sm md:text-[16px] text-[#333] w-full md:w-full leading-relaxed">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+                  GreenTrail Travel selalu siap memberi pengalaman perjalanan yang aman, nyaman, dan mudah. Dari pemesanan hingga perjalanan pulang, tim kami siap mendukung setiap langkah perjalanan Anda.
                 </p>
               </div>
             </div>
 
             {/* Service Cards */}
             <div className="flex flex-col md:flex-row items-start justify-between gap-4 md:gap-[20px]">
-              {/* Service 1 */}
-              <div className="flex-1 border border-[#c4c4c4] rounded-[20px] p-4 md:p-[10px] flex flex-col gap-3 md:gap-[10px] items-center justify-center min-h-[202px]">
+              <div className="flex-1 bg-white border border-[#e7efdf] rounded-[30px] p-5 md:p-[18px] flex flex-col gap-4 items-center justify-center min-h-[220px] shadow-xl transition-transform duration-300 hover:-translate-y-1">
+                <Package className="size-12 md:size-[52px] text-[#569643]" />
                 <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Penyewaan Alat Penunjang</p>
                 <p className="font-normal text-xs md:text-[14px] text-[#333] text-center">
-                  Seperti bantal leher, selimut, atau bahkan power bank yang disediakan oleh pihak travel.
+                  Seperti bantal leher, selimut, atau power bank yang disediakan untuk kenyamanan perjalanan Anda.
                 </p>
-                <div className="flex flex-col items-start">
-                  <div className="size-8 md:size-[44px]">
-                    <svg className="w-full h-full" fill="none" viewBox="0 0 44 34.9533">
-                      <rect fill="#569643" height="34.9533" rx="5" width="44" />
-                      <path d={svgPaths.p36bdaf00.path} fill="white" />
-                    </svg>
-                  </div>
-                </div>
               </div>
-
-              {/* Service 2 */}
-              <div className="flex-1 border border-[#c4c4c4] rounded-[20px] p-4 md:p-[10px] flex flex-col gap-3 md:gap-[10px] items-center justify-center min-h-[202px]">
+              <div className="flex-1 bg-white border border-[#e7efdf] rounded-[30px] p-5 md:p-[18px] flex flex-col gap-4 items-center justify-center min-h-[220px] shadow-xl transition-transform duration-300 hover:-translate-y-1">
+                <Wifi className="size-12 md:size-[52px] text-[#569643]" />
                 <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Hiburan On-Board</p>
                 <p className="font-normal text-xs md:text-[14px] text-[#333] text-center">
-                  Akses Wi-Fi gratis di dalam armada atau sistem hiburan (audio/video) selama perjalanan.
+                  Akses Wi-Fi gratis dalam armada atau sistem hiburan on-board untuk perjalanan yang lebih seru.
                 </p>
-                <div className="flex flex-col items-start">
-                  <div className="size-8 md:size-[44px]">
-                    <svg className="w-full h-full" fill="none" viewBox="0 0 44 34.9533">
-                      <rect fill="#569643" height="34.9533" rx="5" width="44" />
-                      <path d={svgPaths.p36bdaf00.path} fill="white" />
-                    </svg>
-                  </div>
-                </div>
               </div>
-
-              {/* Service 3 */}
-              <div className="flex-1 border border-[#c4c4c4] rounded-[20px] p-4 md:p-[10px] flex flex-col gap-3 md:gap-[10px] items-center justify-center min-h-[202px]">
+              <div className="flex-1 bg-white border border-[#e7efdf] rounded-[30px] p-5 md:p-[18px] flex flex-col gap-4 items-center justify-center min-h-[220px] shadow-xl transition-transform duration-300 hover:-translate-y-1">
+                <ShieldCheck className="size-12 md:size-[52px] text-[#569643]" />
                 <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Asuransi Perjalanan</p>
                 <p className="font-normal text-xs md:text-[14px] text-[#333] text-center">
-                  Proteksi otomatis atau opsional untuk penumpang dan barang bawaan selama perjalanan antar kota.
+                  Proteksi perjalanan dan barang bawaan agar perjalanan Anda tetap aman dan tenang.
                 </p>
-                <div className="flex flex-col items-start">
-                  <div className="size-8 md:size-[44px]">
-                    <svg className="w-full h-full" fill="none" viewBox="0 0 44 34.9533">
-                      <rect fill="#569643" height="34.9533" rx="5" width="44" />
-                      <path d={svgPaths.p36bdaf00.path} fill="white" />
-                    </svg>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
 
           {/* Galeri Konsumen Section */}
-          <div className="flex flex-col gap-8 md:gap-[37px] items-center w-full max-w-4xl">
+          <div id="galeri" className="scroll-mt-28 flex flex-col gap-8 md:gap-[37px] items-center w-full max-w-4xl">
             <div className="flex flex-col gap-4 md:gap-[16px] items-center">
               <div className="bg-[rgba(86,150,67,0.22)] px-3 md:px-[10px] py-3 md:py-[10px] rounded-[10px]">
                 <p className="font-medium text-xs md:text-[14px] text-[#569643]">GALERI KONSUMEN</p>
@@ -479,14 +457,14 @@ export default function App() {
               <div className="flex flex-col gap-4 md:gap-[37px] flex-1">
                 <div className="flex flex-col gap-2 md:gap-[10px]">
                   <div className="h-40 md:h-[240px] rounded-[20px] overflow-hidden">
-                    <img alt="Pangandaran" className="w-full h-full object-cover" src={imgFrame30} />
+                    <img alt="Pangandaran" className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src={imgFrame30} />
                   </div>
                   <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Pangandaran</p>
                   <p className="font-normal text-xs md:text-[14px] text-[#333]">By andrialexa, di Instagram</p>
                 </div>
                 <div className="flex flex-col gap-2 md:gap-[10px]">
                   <div className="h-64 md:h-[515px] rounded-[20px] overflow-hidden">
-                    <img alt="Bandung" className="w-full h-full object-cover" src={imgFrame33} />
+                    <img alt="Bandung" className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src={imgFrame33} />
                   </div>
                   <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Bandung</p>
                   <p className="font-normal text-xs md:text-[14px] text-[#333]">By hadiadiputra, di Instagram</p>
@@ -497,14 +475,14 @@ export default function App() {
               <div className="flex flex-col gap-4 md:gap-[37px] flex-1">
                 <div className="flex flex-col gap-2 md:gap-[10px]">
                   <div className="h-64 md:h-[522px] rounded-[20px] overflow-hidden">
-                    <img alt="Puncak Bogor" className="w-full h-full object-cover" src={imgFrame34} />
+                    <img alt="Puncak Bogor" className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src={imgFrame34} />
                   </div>
                   <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Puncak Bogor</p>
                   <p className="font-normal text-xs md:text-[14px] text-[#333]">By tonygeryy, di Instagram</p>
                 </div>
                 <div className="flex flex-col gap-2 md:gap-[10px]">
                   <div className="h-40 md:h-[240px] rounded-[20px] overflow-hidden">
-                    <img alt="Bromo" className="w-full h-full object-cover" src={imgFrame35} />
+                    <img alt="Bromo" className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src={imgFrame35} />
                   </div>
                   <p className="font-medium text-sm md:text-[16px] text-[#333] text-center">Bromo</p>
                   <p className="font-normal text-xs md:text-[14px] text-[#333]">By harrytraffic, di Instagram</p>
@@ -527,32 +505,20 @@ export default function App() {
 
             {/* Column 2 - Center */}
             <div className="flex flex-col gap-3 md:gap-[15px] items-center">
-              <p className="font-medium">NAMA TRAVEL</p>
-              <div className="flex gap-2 md:gap-[10px] items-center">
-                <div className="size-4 md:size-[20.667px]">
-                  <svg className="w-full h-full" fill="none" viewBox="0 0 20.6667 20.6667">
-                    <path d={svgPaths.p1278b700.path} fill="white" />
-                  </svg>
-                </div>
-                <div className="size-4 md:size-[18px]">
-                  <svg className="w-full h-full" fill="none" viewBox="0 0 18 18">
-                    <path d={svgPaths.p12a54900.path} fill="white" />
-                  </svg>
-                </div>
-                <div className="size-4 md:size-[20px]">
-                  <svg className="w-full h-full" fill="none" viewBox="0 0 20 20">
-                    <path d={svgPaths.p99e5b00.path} fill="white" />
-                  </svg>
-                </div>
+              <p className="font-medium">GreenTrail Travel</p>
+              <div className="flex gap-2 md:gap-[10px] items-center text-white">
+                <MapPin className="size-4 md:size-[20.667px]" />
+                <Globe className="size-4 md:size-[18px]" />
+                <Clock className="size-4 md:size-[20px]" />
               </div>
-              <div className="flex gap-2 md:gap-[10px] items-center justify-center">
-                <div className="size-4 md:size-[18px]">
-                  <svg className="w-full h-full" fill="none" viewBox="0 0 12.7595 14.6388">
-                    <path clipRule="evenodd" d={svgPaths.p24655800.path} fill="white" fillRule="evenodd" />
-                    <path clipRule="evenodd" d={svgPaths.p3d25be00.path} fill="white" fillRule="evenodd" />
-                  </svg>
+              <div className="flex flex-col gap-1 md:gap-[6px] items-center justify-center">
+                <div className="flex gap-2 md:gap-[10px] items-center">
+                  <div className="size-4 md:size-[18px] text-white">
+                    <MapPin className="w-full h-full" />
+                  </div>
+                  <p className="font-medium text-xs md:text-[14px]">Jl. Buahbatu No.04, Bandung</p>
                 </div>
-                <p className="font-medium text-xs md:text-[14px]">Jl. Buahbatu No.04 bla bla bla</p>
+                <p className="font-medium text-xs md:text-[14px]">www.greentrailtravel.com</p>
               </div>
             </div>
 
@@ -568,31 +534,9 @@ export default function App() {
         {/* Floating WhatsApp Button */}
         <button
           onClick={handleWhatsApp}
-          className="fixed right-4 md:right-[50px] bottom-4 md:bottom-[50px] size-12 md:size-[65.733px] bg-[#E9E9E9] rounded-full shadow-lg hover:scale-110 transition-transform z-50 flex items-center justify-center"
+          className="fixed right-4 md:right-[50px] bottom-4 md:bottom-[50px] size-12 md:size-[65.733px] bg-white rounded-full shadow-2xl hover:scale-110 transition-transform z-50 flex items-center justify-center border border-[#dbf0dd]"
         >
-          <div className="size-8 md:size-[43px] relative">
-            <svg className="absolute inset-[1.73%_1.73%_2.06%_1.73%]" fill="none" viewBox="0 0 41.5106 41.3742">
-              <path d={svgPaths.p1abe9d00.path} fill="url(#paint0_linear_1_346)" />
-              <defs>
-                <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_1_346" x1="20.7553" x2="20.7553" y1="41.3742" y2="0">
-                  <stop stopColor="#1FAF38" />
-                  <stop offset="1" stopColor="#60D669" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <svg className="absolute inset-[0_0_0.33%_0]" fill="none" viewBox="0 0 43 42.8578">
-              <path d={svgPaths.p2ae62700.path} fill="url(#paint0_linear_1_363)" />
-              <defs>
-                <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_1_363" x1="21.5" x2="21.5" y1="42.8578" y2="0">
-                  <stop stopColor="#F9F9F9" />
-                  <stop offset="1" stopColor="white" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <svg className="absolute inset-[26.58%_24.53%_26.89%_24.91%]" fill="none" viewBox="0 0 21.743 20.0089">
-              <path d={svgPaths.p280c3270.path} fill="white" />
-            </svg>
-          </div>
+          <MessageCircle className="w-8 h-8 md:w-[34px] md:h-[34px] text-[#1FAF38]" />
         </button>
       </div>
     </div>

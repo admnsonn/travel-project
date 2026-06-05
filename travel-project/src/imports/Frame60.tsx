@@ -15,7 +15,7 @@ function Frame3() {
           <circle cx="11.7964" cy="11.7964" fill="var(--fill-0, #D9D9D9)" id="Ellipse 1" r="11.7964" />
         </svg>
       </div>
-      <p className="font-['Poppins:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[20px] text-white whitespace-nowrap">Nama</p>
+      <p className="font-['Poppins:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[20px] text-white whitespace-nowrap">GreenTrail</p>
     </div>
   );
 }
@@ -421,7 +421,7 @@ function Frame40() {
     <div className="content-stretch flex flex-col gap-[16px] items-center justify-center relative shrink-0 w-full">
       <Frame23 />
       <p className="font-['Poppins:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#333] text-[24px] whitespace-nowrap">Tentang Perusahaan</p>
-      <p className="font-['Poppins:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#333] text-[16px] text-center w-[689.562px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+      <p className="font-['Poppins:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#333] text-[16px] text-center w-[689.562px]">GreenTrail Travel menghadirkan pengalaman perjalanan yang fokus pada kenyamanan, kepercayaan, dan eksplorasi lokal. Paket kami dirancang untuk membuat setiap rencana perjalanan menjadi mudah dan menyenangkan.</p>
     </div>
   );
 }
@@ -799,7 +799,7 @@ function Frame54() {
 function Frame56() {
   return (
     <div className="content-stretch flex items-center justify-center relative shrink-0">
-      <p className="font-['Poppins:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#333] text-[16px] w-[617.336px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+      <p className="font-['Poppins:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#333] text-[16px] w-[617.336px]">Dari dukungan rencana perjalanan hingga kenyamanan on-board, GreenTrail Travel memastikan setiap langkah perjalanan Anda terkelola dengan baik dan penuh perhatian.</p>
     </div>
   );
 }
@@ -1193,9 +1193,12 @@ function BasilLocationOutline1() {
 
 function Frame87() {
   return (
-    <div className="content-stretch flex gap-[10px] items-center justify-center relative shrink-0">
-      <BasilLocationOutline1 />
-      <p className="font-['Poppins:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[14px] text-center text-white whitespace-nowrap">Jl. Buahbatu No.04 bla bla bla</p>
+    <div className="content-stretch flex flex-col gap-1 items-center justify-center relative shrink-0">
+      <div className="flex gap-[10px] items-center justify-center">
+        <BasilLocationOutline1 />
+        <p className="font-['Poppins:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[14px] text-center text-white whitespace-nowrap">Jl. Buahbatu No.04, Bandung</p>
+      </div>
+      <p className="font-['Poppins:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[14px] text-center text-white whitespace-nowrap">www.greentrailtravel.com</p>
     </div>
   );
 }
@@ -1203,7 +1206,7 @@ function Frame87() {
 function Frame85() {
   return (
     <div className="content-stretch flex flex-col gap-[15px] items-center justify-center relative shrink-0">
-      <p className="font-['Poppins:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[16px] text-center text-white whitespace-nowrap">NAMA TRAVEL</p>
+      <p className="font-['Poppins:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[16px] text-center text-white whitespace-nowrap">GreenTrail Travel</p>
       <Frame86 />
       <Frame87 />
     </div>
