@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { CalendarDays, ChevronDown, Clock, Globe, MapPin, MessageCircle, Menu, Package, ShieldCheck, Users, Wifi, X } from "lucide-react";
 import imgFrame1 from "../assets/gambar1.png";
 import imgFrame31 from "../assets/gambar2.png";

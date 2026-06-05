@@ -4,8 +4,17 @@ npm-debug.log
 .DS_Store
 .env.local
 .env.*.local
-*.config.*
-tsconfig*.json
+# Keep configuration files for build on Vercel
+# *.config.*
+# tsconfig*.json
 eslint.config.js
 postcss.config.mjs
+alias_index.html
+deployed_index.html
+vercel_index.html
+app.js
+deployed_app.js
+deployed_app.css
+live_app.js
+deployed.css
 # Note: `src/` removed so Vercel includes source files for the build
