@@ -7,6 +7,8 @@ import imgFrame30 from "../assets/gambar4.png";
 import imgFrame33 from "../assets/gambar5.png";
 import imgFrame34 from "../assets/gambar2.png";
 import imgFrame35 from "../assets/gambar3.png";
+import imgFrame3 from "../assets/Frame 3.png";
+import imgFrame5 from "../assets/Frame5.png";
 import logo from "../assets/Frame 77.png";
 
 export default function App() {
@@ -16,6 +18,7 @@ export default function App() {
   const [endDate, setEndDate] = useState("14-08-2028");
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [searchMessage, setSearchMessage] = useState("");
+  const [searchResults, setSearchResults] = useState<Array<{ title: string; subtitle: string; note: string }>>([]);
   const [bookingMessage, setBookingMessage] = useState("");
   const [showDestinationDropdown, setShowDestinationDropdown] = useState(false);
   const [showPeopleDropdown, setShowPeopleDropdown] = useState(false);
@@ -27,6 +30,9 @@ export default function App() {
     { name: "Pangandaran", image: imgFrame1, duration: "2 Hari", people: "Min 2 Orang", category: "Alam" },
     { name: "Puncak Bogor", image: imgFrame31, duration: "1 Hari", people: "Min 7 Orang", category: "Kota" },
     { name: "Jogjakarta", image: imgFrame32, duration: "3 Hari", people: "Min 10 Orang", category: "Trending" },
+    { name: "Bali", image: imgFrame30, duration: "4 Hari", people: "Min 2 Orang", category: "Trending" },
+    { name: "Raja Ampat", image: imgFrame33, duration: "5 Hari", people: "Min 4 Orang", category: "Alam" },
+    { name: "Labuan Bajo", image: imgFrame34, duration: "3 Hari", people: "Min 6 Orang", category: "Kota" },
   ];
   const peopleOptions = ["Satu", "Dua", "Tiga", "Empat", "Lima"];
   const categories = ["Semua", "Trending", "Alam", "Kota"];
@@ -44,11 +50,41 @@ export default function App() {
 
     if (start > end) {
       setSearchMessage("Tanggal akhir harus setelah tanggal mulai.");
+      setSearchResults([]);
       return;
     }
 
-    setSearchMessage(`Hasil pencarian: ${selectedDestination} untuk ${selectedPeople} orang, ${startDate} - ${endDate}.`);
+    const variants = [
+      `Tersedia paket favorit untuk ${selectedDestination} dengan ${selectedPeople.toLowerCase()} orang, ${startDate} - ${endDate}.`,
+      `Cari perjalanan ${selectedDestination}? Ini cocok untuk ${selectedPeople.toLowerCase()} orang selama ${startDate} sampai ${endDate}.`,
+      `Rangkuman pencarian: ${selectedDestination} untuk ${selectedPeople.toLowerCase()} orang, mulai ${startDate} hingga ${endDate}.`,
+      `Pilihan paket terbaik untuk ${selectedDestination} sudah disiapkan. Cocok untuk ${selectedPeople.toLowerCase()} orang!`,
+      `Temukan perjalanan paling seru untuk ${selectedDestination}. Mulai ${startDate} hingga ${endDate}.`,
+      `Paket eksklusif ${selectedDestination} untuk ${selectedPeople.toLowerCase()} orang - siap dipesan sekarang.`,
+    ];
+
+    const phrase = variants[Math.floor(Math.random() * variants.length)];
+    setSearchMessage(phrase);
     setBookingMessage("");
+
+    const resultsPool = selectedCategory === "Semua" ? destinations : destinations.filter((destination) => destination.category === selectedCategory);
+    const shuffled = [...resultsPool].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, 4);
+
+    const noteOptions = [
+      `Termasuk transportasi, akomodasi, dan guide lokal.`,
+      `Nikmati pengalaman kuliner, wisata alam, dan aktivitas seru.`,
+      `Pilihan hotel nyaman dengan review terbaik.`,
+      `Paket fleksibel, mudah diubah sesuai kebutuhan keluarga.`,
+    ];
+
+    const moreResults = selected.map((destination, index) => ({
+      title: `${destination.name} - ${destination.category}`,
+      subtitle: `${destination.duration} • ${destination.people}`,
+      note: noteOptions[index % noteOptions.length],
+    }));
+
+    setSearchResults(moreResults);
   };
 
   const handleBooking = () => {
@@ -77,7 +113,7 @@ export default function App() {
       <div className="min-h-screen w-full flex flex-col items-center">
         {/* Hero Section */}
         <div id="home" className="w-full relative">
-          <div className="w-full h-screen md:h-[520px] relative overflow-hidden">
+          <div className="w-full h-screen md:h-[520px] relative overflow-visible">
             <div className="absolute -left-16 top-16 h-72 w-72 rounded-full bg-[#7bc86c]/30 blur-3xl" />
             <div className="absolute right-0 top-28 h-56 w-56 rounded-full bg-[#d8f2e1]/50 blur-3xl" />
             <img alt="" className="absolute inset-0 w-full h-full object-cover" src={imgFrame1} />
@@ -151,7 +187,7 @@ export default function App() {
               </div>
 
               {/* Search Bar */}
-              <div className="bg-white/95 border border-[#dce7d7] shadow-[0_30px_80px_rgba(34,78,41,0.12)] flex flex-col md:flex-row gap-4 md:gap-[38px] items-center px-4 md:px-[30px] py-4 md:py-[20px] rounded-[30px] w-full md:w-auto max-w-5xl mx-4">
+              <div className="bg-white/95 border border-[#dce7d7] shadow-[0_30px_80px_rgba(34,78,41,0.12)] flex flex-col md:flex-row gap-4 md:gap-[38px] items-center px-4 md:px-[30px] py-4 md:py-[20px] rounded-[30px] w-full md:w-auto max-w-5xl mx-4 overflow-visible">
                 {/* Destination */}
                 <div className="flex flex-col gap-2 md:gap-[10px] relative w-full md:w-auto">
                   <div className="flex gap-2 md:gap-[10px] items-center">
@@ -170,7 +206,7 @@ export default function App() {
                     </div>
                   </div>
                   {showDestinationDropdown && (
-                    <div className="absolute top-[70px] left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
+                    <div className="absolute top-[70px] left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[150px]">
                       {destinations.map((dest) => (
                         <div
                           key={dest.name}
@@ -187,11 +223,7 @@ export default function App() {
                   )}
                 </div>
 
-                <div className="hidden md:block h-[49.794px] w-0 rotate-90">
-                  <svg className="w-[49.794px] h-[1px]" fill="none" viewBox="0 0 49.7938 1">
-                    <line stroke="#878787" x2="49.7938" y1="0.5" y2="0.5" />
-                  </svg>
-                </div>
+                <div className="hidden md:block h-12 w-px bg-[#d1d5c8]" aria-hidden="true" />
 
                 {/* People */}
                 <div className="flex flex-col gap-2 md:gap-[10px] relative w-full md:w-auto">
@@ -211,7 +243,7 @@ export default function App() {
                     </div>
                   </div>
                   {showPeopleDropdown && (
-                    <div className="absolute top-[70px] left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
+                    <div className="absolute top-[70px] left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[150px]">
                       {peopleOptions.map((option) => (
                         <div
                           key={option}
@@ -228,11 +260,7 @@ export default function App() {
                   )}
                 </div>
 
-                <div className="hidden md:block h-[49.794px] w-0 rotate-90">
-                  <svg className="w-[49.794px] h-[1px]" fill="none" viewBox="0 0 49.7938 1">
-                    <line stroke="#878787" x2="49.7938" y1="0.5" y2="0.5" />
-                  </svg>
-                </div>
+                <div className="hidden md:block h-12 w-px bg-[#d1d5c8]" aria-hidden="true" />
 
                 {/* Start Date */}
                 <div className="flex flex-col gap-2 md:gap-[10px] relative w-full md:w-auto">
@@ -249,7 +277,7 @@ export default function App() {
                     </div>
                   </div>
                   {showStartDateDropdown && (
-                    <div className="absolute top-[70px] left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
+                    <div className="absolute top-[70px] left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[150px]">
                       {startDateOptions.map((date) => (
                         <div
                           key={date}
@@ -266,11 +294,7 @@ export default function App() {
                   )}
                 </div>
 
-                <div className="hidden md:block h-[49.794px] w-0 rotate-90">
-                  <svg className="w-[49.794px] h-[1px]" fill="none" viewBox="0 0 49.7938 1">
-                    <line stroke="#878787" x2="49.7938" y1="0.5" y2="0.5" />
-                  </svg>
-                </div>
+                <div className="hidden md:block h-12 w-px bg-[#d1d5c8]" aria-hidden="true" />
 
                 {/* End Date */}
                 <div className="flex flex-col gap-2 md:gap-[10px] relative w-full md:w-auto">
@@ -287,7 +311,7 @@ export default function App() {
                     </div>
                   </div>
                   {showEndDateDropdown && (
-                    <div className="absolute top-[70px] left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
+                    <div className="absolute top-[70px] left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[150px]">
                       {endDateOptions.map((date) => (
                         <div
                           key={date}
@@ -312,9 +336,25 @@ export default function App() {
                   <p className="font-normal text-xs md:text-[15px] text-white">Cari</p>
                 </button>
               </div>
-              {searchMessage && (
-                <div className="mt-4 text-center text-sm md:text-base text-[#1B6D2A]">
-                  {searchMessage}
+              {(searchMessage || searchResults.length > 0) && (
+                <div className="relative z-20 mt-4 w-full max-w-5xl rounded-[30px] bg-white/95 border border-[#e4eddc] p-4 shadow-[0_30px_80px_rgba(34,78,41,0.12)] backdrop-blur-sm">
+                  {searchMessage && (
+                    <div className="text-center text-sm md:text-base text-[#1f381b]">
+                      {searchMessage}
+                    </div>
+                  )}
+
+                  {searchResults.length > 0 && (
+                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
+                      {searchResults.map((result, index) => (
+                        <div key={index} className="rounded-[24px] border border-[#d6e9d0] bg-white p-4 shadow-[0_20px_50px_rgba(34,78,41,0.08)]">
+                          <p className="font-semibold text-sm md:text-[16px] text-[#1f381b]">{result.title}</p>
+                          <p className="text-xs md:text-[14px] text-[#5f724f] mt-2">{result.subtitle}</p>
+                          <p className="text-xs md:text-[14px] text-[#556643] mt-3">{result.note}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
               {bookingMessage && (
@@ -329,14 +369,49 @@ export default function App() {
         {/* Content Sections */}
         <div className="w-full flex flex-col gap-12 md:gap-[60px] py-8 md:py-[78px] items-center px-4 md:px-[20px]">
           {/* Tentang Kami Section */}
-          <div id="tentang" className="scroll-mt-28 flex flex-col gap-4 md:gap-[16px] items-center w-full max-w-3xl">
+          <div id="tentang" className="scroll-mt-28 flex flex-col gap-8 md:gap-[24px] items-center w-full max-w-5xl">
             <div className="bg-[rgba(86,150,67,0.22)] px-3 md:px-[10px] py-3 md:py-[10px] rounded-[10px]">
               <p className="font-medium text-xs md:text-[14px] text-[#569643]">TENTANG KAMI</p>
             </div>
-            <p className="font-medium text-lg md:text-[24px] text-[#333]">Tentang Perusahaan</p>
-            <p className="font-normal text-sm md:text-[16px] text-[#333] text-center">
-              GreenTrail Travel adalah penyedia perjalanan yang menghubungkan petualang dengan destinasi lokal terbaik di Indonesia. Kami memudahkan perjalanan Anda dengan paket lengkap, dukungan personal, dan pengalaman ramah lingkungan.
-            </p>
+            <div className="flex flex-col gap-3 md:gap-[15px] items-center text-center">
+              <p className="font-medium text-lg md:text-[24px] text-[#333]">Tentang Perusahaan</p>
+              <p className="font-normal text-sm md:text-[16px] text-[#333] max-w-4xl">
+                GreenTrail Travel hadir sebagai mitra perjalanan yang menghubungkan Anda ke destinasi lokal terbaik di Indonesia. Kami menyediakan paket lengkap, layanan personal, dan pengalaman ramah lingkungan yang dirancang untuk membuat setiap perjalanan menjadi lebih mudah dan berkesan.
+              </p>
+              <p className="font-normal text-sm md:text-[16px] text-[#333] max-w-4xl leading-relaxed">
+                Dengan tim profesional, dukungan 24/7, dan komitmen terhadap kenyamanan pelanggan, kami siap membantu Anda merancang perjalanan keluarga, liburan bersama teman, maupun petualangan solo yang aman dan penuh kejutan.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+              <div className="bg-white rounded-[28px] overflow-hidden shadow-[0_25px_60px_rgba(52,75,36,0.12)]">
+                <img alt="Tim profesional" className="w-full h-44 object-cover" src={imgFrame3} />
+                <div className="p-4">
+                  <p className="font-medium text-sm md:text-[16px] text-[#333]">Tim Profesional</p>
+                  <p className="font-normal text-xs md:text-[14px] text-[#666] mt-2">
+                    Dipandu oleh tim yang berpengalaman dan paham rute terbaik untuk wisata Anda.
+                  </p>
+                </div>
+              </div>
+              <div className="bg-white rounded-[28px] overflow-hidden shadow-[0_25px_60px_rgba(52,75,36,0.12)]">
+                <img alt="Akomodasi nyaman" className="w-full h-44 object-cover" src={imgFrame5} />
+                <div className="p-4">
+                  <p className="font-medium text-sm md:text-[16px] text-[#333]">Akomodasi Nyaman</p>
+                  <p className="font-normal text-xs md:text-[14px] text-[#666] mt-2">
+                    Pilihan hotel dan penginapan yang bersih, aman, dan strategis di setiap destinasi.
+                  </p>
+                </div>
+              </div>
+              <div className="bg-white rounded-[28px] overflow-hidden shadow-[0_25px_60px_rgba(52,75,36,0.12)]">
+                <img alt="Pengalaman unik" className="w-full h-44 object-cover" src={imgFrame34} />
+                <div className="p-4">
+                  <p className="font-medium text-sm md:text-[16px] text-[#333]">Pengalaman Unik</p>
+                  <p className="font-normal text-xs md:text-[14px] text-[#666] mt-2">
+                    Aktivitas menarik dari kuliner lokal hingga petualangan alam untuk momen tak terlupakan.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Destinasi Section */}
@@ -396,6 +471,79 @@ export default function App() {
               ) : (
                 <p className="text-center text-sm text-[#333] w-full">Tidak ada destinasi untuk kategori "{selectedCategory}".</p>
               )}
+            </div>
+          </div>
+
+          {/* Paket Populer Section */}
+          <div id="paket" className="scroll-mt-28 flex flex-col gap-8 md:gap-[37px] items-center w-full max-w-5xl">
+            <div className="flex flex-col gap-4 md:gap-[16px] items-center">
+              <div className="bg-[rgba(86,150,67,0.22)] px-3 md:px-[10px] py-3 md:py-[10px] rounded-[10px]">
+                <p className="font-medium text-xs md:text-[14px] text-[#569643]">PAKET POPULER</p>
+              </div>
+              <p className="font-medium text-lg md:text-[24px] text-[#333]">Paket Perjalanan yang Paling Banyak Dipilih</p>
+              <p className="font-normal text-sm md:text-[16px] text-[#333] text-center max-w-2xl">
+                Temukan paket petualangan lengkap untuk keluarga, pasangan, atau teman. Semua sudah termasuk transportasi, akomodasi, dan itinerary menarik.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+              <div className="bg-white rounded-[30px] p-5 shadow-[0_25px_60px_rgba(52,75,36,0.12)] transition-transform duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-medium text-sm md:text-[16px] text-[#333]">Family Escape</p>
+                  <span className="rounded-full bg-[#e4f2de] px-3 py-1 text-xs text-[#569643]">Paling Favorit</span>
+                </div>
+                <p className="font-normal text-xs md:text-[14px] text-[#333] leading-relaxed">
+                  Liburan keluarga dengan destinasi terpilih, aktivitas anak, transportasi nyaman, dan dukungan penuh selama perjalanan.
+                </p>
+                <div className="mt-6 flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-[#569643]">
+                    <MapPin className="w-4 h-4" />
+                    <span className="text-xs md:text-[14px]">Destinasi Populer</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[#569643]">
+                    <CalendarDays className="w-4 h-4" />
+                    <span className="text-xs md:text-[14px]">3 Hari 2 Malam</span>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-[30px] p-5 shadow-[0_25px_60px_rgba(52,75,36,0.12)] transition-transform duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-medium text-sm md:text-[16px] text-[#333]">Romantic Getaway</p>
+                  <span className="rounded-full bg-[#e4f2de] px-3 py-1 text-xs text-[#569643]">Hemat</span>
+                </div>
+                <p className="font-normal text-xs md:text-[14px] text-[#333] leading-relaxed">
+                  Paket pasangan dengan pemandangan terbaik, makan romantis, dan pilihan hotel premium untuk pengalaman berkesan.
+                </p>
+                <div className="mt-6 flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-[#569643]">
+                    <Users className="w-4 h-4" />
+                    <span className="text-xs md:text-[14px]">Untuk 2 Orang</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[#569643]">
+                    <Clock className="w-4 h-4" />
+                    <span className="text-xs md:text-[14px]">Fleksibel & Aman</span>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-[30px] p-5 shadow-[0_25px_60px_rgba(52,75,36,0.12)] transition-transform duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-medium text-sm md:text-[16px] text-[#333]">Adventure Trip</p>
+                  <span className="rounded-full bg-[#e4f2de] px-3 py-1 text-xs text-[#569643]">Terbaru</span>
+                </div>
+                <p className="font-normal text-xs md:text-[14px] text-[#333] leading-relaxed">
+                  Petualangan outdoor dengan rute menarik, pemandu profesional, dan pengalaman alam yang melekat dalam ingatan Anda.
+                </p>
+                <div className="mt-6 flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-[#569643]">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span className="text-xs md:text-[14px]">Asuransi & Keamanan</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[#569643]">
+                    <Globe className="w-4 h-4" />
+                    <span className="text-xs md:text-[14px]">Destinasi Alam</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
